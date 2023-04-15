@@ -1,20 +1,10 @@
 FROM python:3.9-slim as compiler
-ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app/
+COPY requirements.txt requirements.txt
 
-RUN python -m venv /opt/venv
-# Enable venv
-ENV PATH="/opt/venv/bin:$PATH"
+RUN pip3 install -r requirements.txt
 
-COPY ./requirements.txt /app/requirements.txt
-RUN pip install -Ur requirements.txt
+COPY . .
 
-FROM python:3.9-slim as runner
-WORKDIR /app/
-COPY --from=compiler /opt/venv /opt/venv
-
-# Enable venv
-ENV PATH="/opt/venv/bin:$PATH"
-COPY . /app/
-CMD ["python", "main.py", ]
+CMD ["python3", "main.py"]
