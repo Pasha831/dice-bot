@@ -25,6 +25,10 @@ async def cmd_start(message: types.Message):
 async def cmd_dice(message: types.Message):
     await message.answer_dice(emoji="🎲")
 
+@dp.message(Command("basket"))
+async def cmd_dice(message: types.Message):
+    await message.answer_dice(emoji="🏀")
+
 # Запуск процесса поллинга новых апдейтов
 async def main():
     await dp.start_polling(bot)
