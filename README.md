@@ -1,3 +1,3 @@
 # python-govno
 
-I did it.
+Does it work?
