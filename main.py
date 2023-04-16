@@ -20,7 +20,7 @@ async def cmd_start(message: types.Message):
         [
             types.KeyboardButton(text="🏀"),
             types.KeyboardButton(text="🎲"),
-            types.KeyboardButton(text"Python")
+            types.KeyboardButton(text="Python")
         ],
     ]
     keyboard = types.ReplyKeyboardMarkup(
