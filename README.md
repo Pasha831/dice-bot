@@ -1,3 +1,1 @@
-# python-govno
-
-Does it work?
+# dice-bot
