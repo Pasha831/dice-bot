@@ -149,3 +149,13 @@ docker compose up -d
 ```
 
 At the moment, we can forget about all manual work we did before and just take pleasure of CI/CD's benefits. Just alter the repository, push to `master`, and all deployment job will be done for you automatically.
+
+# Conclusion
+
+To sum up, I'm over the moon to possess this knowledge and share the information with others. Wish this repository did it's main target to familiarize people with CI/CD basics.
+
+Moreover, I'm completely open to receive useful tips and obtain healthy criticism from other developers. 
+
+The [bot](https://t.me/bigboi666bot) is still rinning and you can play with it whenever you want. Furthermore, if you want to change bot's behaviour, do not be afraid to fork this repository and create a pull request to merge it inside `master` branch.
+
+<img src="https://user-images.githubusercontent.com/46136468/232711246-9e890ed0-5a45-4314-bd67-b0db11a57171.png"  width="75%" height="75%">
