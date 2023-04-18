@@ -18,6 +18,8 @@ This projects is based on a simple telegram bot, that asks the user to guess the
 
 <img src="https://user-images.githubusercontent.com/46136468/232685618-5953c1d6-49f1-4263-b900-19a638f00d7b.png"  width="50%" height="50%">
 
+As for bot token, I store it inside `.env` file on my VPS.
+
 The bot is still running and you can try it on your own by clicking [here](https://t.me/bigboi666bot).
 
 
@@ -91,3 +93,59 @@ Here, I don't want to dive in details of a creation and seting up of VPS and wil
 - [How to establish a connection](https://cloud.yandex.com/en-ru/docs/compute/operations/vm-connect/ssh) to the VPS via [ssh](https://en.wikipedia.org/wiki/Secure_Shell) and also [how to add other users to the VM](https://cloud.yandex.com/en-ru/docs/compute/operations/vm-connect/ssh#vm-authorized-keys)
 
 In addition, I want to share the instruction [how to connect to VM using SSH via Visual Studio Code](https://code.visualstudio.com/docs/remote/ssh-tutorial).
+
+# Docker: update running containers to latest images
+
+It is not a rocket science [how to build a docker image](https://docs.docker.com/engine/reference/commandline/build/).
+
+For this project, `Dockerfile` has to pull `python3` image, copy `requirements.txt` and then download all dependecies via `pip install` command with `-r` flag, that's all:
+ ```Dockerfile
+ FROM python:3.9-slim as compiler
+
+WORKDIR /app/
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+CMD ["python3", "main.py"]
+ ```
+
+On your virtual machine you can freely [login to Docker Hub](https://stackoverflow.com/questions/57108005/login-to-docker-hub-by-command-line), [pull the image](https://docs.docker.com/engine/reference/commandline/pull/) and then [start it](https://docs.docker.com/engine/reference/commandline/run/) via `docker run` command:
+```cmd
+docker run -d pasha831/bot:latest
+```
+
+However, there is a noticeable drawback of this approach: you have to manually [stop your container](https://docs.docker.com/engine/reference/commandline/stop/) when the corresponding image is updated, [manually update the image](https://phoenixnap.com/kb/update-docker-image-container) and then launch again your container.
+
+It's a huge waist of time and effort which could be optimized by some automatization proccess.
+
+There is a quite clear instruction how to [Automatically Update Docker Container Images with Watchtower on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-automatically-update-docker-container-images-with-watchtower-on-ubuntu-22-04). You also have to know how to work with [Docker Compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-22-04).
+
+Here is a `docker-compose.yml` file which launches bot container with `.env` file with its token as a parameter and also launches [Watchtower](https://github.com/containrrr/watchtower) container to observe any updates of former container on Docker Hub:
+```yml
+version: "3"
+services:
+  bot:
+    image: pasha831/bot:latest
+    container_name: bot-container
+    env_file:
+      - .env
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 bot-container
+```
+
+`command: --interval 86400 bot-container` command line tells the Watchtower to check for updates of `bot-container` every 86400 seconds, or 1 time per day.
+
+After all these steps, we are able to launch both container in a background (`-d` flag) with this command:
+```cmd
+docker compose up -d
+```
+
+At the moment, we can forget about all manual work we did before and just take pleasure of CI/CD's benefits. Just alter the repository, push to `master`, and all deployment job will be done for you automatically.
