@@ -1,3 +1,5 @@
+"""Dice Bot"""
+
 import asyncio
 import logging
 import os
@@ -17,7 +19,7 @@ dp = Dispatcher(bot)
 
 def get_keyboard():
     """Function which create a keyboard with 6 different buttons."""
-    kb = [
+    keyboard = [
             [
                 types.KeyboardButton(text="1️⃣"),
                 types.KeyboardButton(text="2️⃣"),
@@ -28,7 +30,7 @@ def get_keyboard():
             ],
         ]
     keyboard = types.ReplyKeyboardMarkup(
-        keyboard=kb,
+        keyboard=keyboard,
         resize_keyboard=True
     )
     return keyboard
