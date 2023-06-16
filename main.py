@@ -16,6 +16,7 @@ dp = Dispatcher(bot)
 
 
 def get_keyboard():
+    """Function which create a keyboard with 6 different buttons."""
     kb = [
             [
                 types.KeyboardButton(text="1️⃣"),
@@ -35,11 +36,13 @@ def get_keyboard():
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
+    """Function to send greeting message to user."""
     await message.answer("🧐 Guess a number on a dice 🎲", reply_markup=get_keyboard())
 
 
 @dp.message_handler(state="*")
 async def message_handler(message: types.Message):
+    """Handler for different types of messages."""
     emoji_to_digit = {"1️⃣": 1, "2️⃣": 2, "3️⃣": 3, "4️⃣": 4, "5️⃣": 5, "6️⃣": 6}
 
     if message.text in emoji_to_digit:
@@ -54,6 +57,7 @@ async def message_handler(message: types.Message):
 
 
 async def main():
+    """Entrypoint of the bot."""
     await dp.start_polling(bot)
 
 
