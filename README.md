@@ -199,6 +199,14 @@ To sum up, I'm over the moon to possess this knowledge and share the information
 
 Moreover, I'm completely open to receive useful tips and obtain healthy criticism from other developers. 
 
+## What I've made
+- [x] Telegram Bot on Python
+- [x] 2 CI pipelines: building & pushing Docker images, testing & linting of Python code
+- [x] Pipelines trgger everytime the push or PR on master branch emerge
+- [x] Upload Docker Image on Docker Hub
+- [x] Rollout of Telegram Bot on Virtual Private Server
+- [x] Force Docker container update every time when parent image is updated
+
 The [bot](https://t.me/bigboi666bot) is still rinning and you can play with it whenever you want. Furthermore, if you want to change bot's behaviour, do not be afraid to fork this repository and create a pull request to merge it inside `master` branch.
 
 <img src="https://user-images.githubusercontent.com/46136468/232711246-9e890ed0-5a45-4314-bd67-b0db11a57171.png"  width="75%" height="75%">
