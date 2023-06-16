@@ -25,15 +25,17 @@ The bot is still running and you can try it on your own by clicking [here](https
 
 # Github Actions: simple CI pipeline
 
-At the very beginning of the project I wished I could alter my repository with bot, commit changes, push them to `master` branch and then Github automatically builds a docker image of the project and pushes it straight to Docker Hub, where I could pull the image wherever I want (in my case: on VPS in cloud).
+At the very beginning of the project I wished I could alter my repository, commit changes, push them to `master` branch and then Github automatically executes tests, checks the code, builds a docker image of the project and pushes it straight to Docker Hub, where I could pull the image wherever I want (in my case: on VPS in cloud).
 
-In order to bring the idea to life I created a basic `.yml` script, which listens to changes of `master` branch and when the changes occured, perform these steps:
+In order to bring the idea to life I've created 2 basic `.yml` scripts, where **former** is responisble for script building, test running and checking code style, whereas **latter** listens to changes of `master` branch and when the changes occured, perform these steps:
 - launch a virtual machine on `ubuntu-latest` system
 - login to Docker Hub using credentials from `Actions secrets and variables` inside the repository ([how to manage secrets inside a repository](https://docs.github.com/en/codespaces/managing-codespaces-for-your-organization/managing-encrypted-secrets-for-your-repository-and-organization-for-github-codespaces))
 
 <img src="https://user-images.githubusercontent.com/46136468/232688732-8473487d-e243-4841-8a13-c2daecb3d96b.png"  width="75%" height="50%">
 
 - build a docker image of the project called `bot` with `lastest` tag added to it and then push it to Docker Hub
+
+## Build & Push Docker image
 
 So, here is a `.yml` file which helps me to perform all these operations (you can also find inside .github/workflows folder, right [here](https://github.com/Pasha831/dice-bot/blob/master/.github/workflows/blank.yml))
 
@@ -75,6 +77,45 @@ Thus, this Github Action allows me to update my [docker image](https://hub.docke
 
 <img src="https://user-images.githubusercontent.com/46136468/232690348-96c86cf6-f686-47d4-a6ca-1c2dc3dae4e3.png"  width="75%" height="50%">
 
+## Testing and Linting
+
+I've also wrote a simple `.yml` script to install all the requirements from `requirements.txt`, execute tests with [`pytest`](https://docs.pytest.org/en/7.3.x/) and check the validity and following to [PEP8](https://peps.python.org/pep-0008/) of my code using [`pylint`](https://pypi.org/project/pylint/).
+
+So, here's the script:
+
+```yml
+name: Test&Lint
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  workflow_dispatch:
+
+jobs:
+  test_and_lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Test with pytest
+        run: pytest test_code.py
+      
+      - name: Lint with pylint
+        run: pylint main.py
+        
+```
+
+That's the example of perfectly working pipeline with no bugs and erros in code, as well as without deviations from renowned code style:
+
+![image](https://github.com/Pasha831/dice-bot/assets/46136468/ced0206c-f315-47dc-9eb0-85f03987b819)
+
 # Yandex Cloud, it's VPSs and pricing
 
 I decided to use [Yandex Cloud](https://cloud.yandex.com/en-ru/) to create my own VPS where the bot will be running. I understand, that there are lots of cheaper and better clouds on the web, but this one was a perfect choice for a newbie like me because of its simplicity in creation and use.
@@ -93,6 +134,8 @@ Here, I don't want to dive in details of a creation and seting up of VPS and wil
 - [How to establish a connection](https://cloud.yandex.com/en-ru/docs/compute/operations/vm-connect/ssh) to the VPS via [ssh](https://en.wikipedia.org/wiki/Secure_Shell) and also [how to add other users to the VM](https://cloud.yandex.com/en-ru/docs/compute/operations/vm-connect/ssh#vm-authorized-keys)
 
 In addition, I want to share the instruction [how to connect to VM using SSH via Visual Studio Code](https://code.visualstudio.com/docs/remote/ssh-tutorial).
+
+> Noticeable mention: at this moment I ran out of money on my Yandex Cloud account, so I had decided to switch to another VPS provied. I would recommend you to use [MTS Cloud](https://cloud.mts.ru/en/), because these guys provide you **5000** rouble grand after the first payment (500+ russian rubles).
 
 # Docker: update running containers to latest images
 
@@ -143,7 +186,7 @@ services:
 
 `command: --interval 86400 bot-container` command line tells the Watchtower to check for updates of `bot-container` every 86400 seconds, or 1 time per day.
 
-After all these steps, we are able to launch both container in a background (`-d` flag) with this command:
+After all these steps, we are able to launch both container in a background (`-d` flag, detached mode) with this command:
 ```cmd
 docker compose up -d
 ```
