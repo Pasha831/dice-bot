@@ -39,7 +39,7 @@ def get_keyboard():
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     """Function to send greeting message to user."""
-    await message.answer("🧐 Guess a number on a dice 🎲", reply_markup=get_keyboard())
+    await message.answer("🧐 Guesss a number on a dice 🎲", reply_markup=get_keyboard())
 
 
 @dp.message_handler(state="*")
